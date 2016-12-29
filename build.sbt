@@ -22,12 +22,19 @@ crossPaths := false
 
 credentials += Credentials(
   sys.props.getOrElse("repo.name", "Sponge Repo"),
-  new URL(sys.props("repo.url")).getHost,
-  sys.props("repo.user"),
-  sys.props("repo.pwd")
+  sys.props.get("repo.url").map(new URL(_).getHost).getOrElse(""),
+  sys.props.getOrElse("repo.user", ""),
+  sys.props.getOrElse("repo.pwd", "")
 )
 
-publishTo := Some(sys.props.getOrElse("repo.name", "Sponge Repo") at sys.props("repo.url"))
+publishTo <<= version { (v: String) =>
+  val repoName = sys.props.get("repo.name")
+  val repoUrl = sys.props.get("repo.url")
+  if (repoName.isDefined && repoUrl.isDefined)
+    Some(repoName.get at repoUrl.get)
+  else
+    Some(Resolver.file("file", new File(Path.userHome.absolutePath + "/.ivy2/local")))
+}
 
 // Replace default publish task with the one from sbt-aether-deploy
 overridePublishSettings
