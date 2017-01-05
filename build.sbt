@@ -2,7 +2,7 @@ name := "sponge-play"
 
 organization := "org.spongepowered"
 
-version := "1.0.0-SNAPSHOT"
+version := "1.0.1-SNAPSHOT"
 
 lazy val `spongeplay` = (project in file(".")).enablePlugins(PlayScala)
 
